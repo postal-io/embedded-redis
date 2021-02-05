@@ -1,6 +1,7 @@
 package redis.embedded;
 
 import com.google.common.io.Resources;
+import org.junit.After;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -18,7 +19,14 @@ public class RedisServerTest {
 
 	private RedisServer redisServer;
 
-	@Test(timeout = 1500L)
+	@After
+    public void after() {
+	    if (redisServer != null) {
+	        redisServer.stop();
+        }
+    }
+
+	@Test(timeout = 2000L)
 	public void testSimpleRun() throws Exception {
 		redisServer = new RedisServer(6379);
 		redisServer.start();
