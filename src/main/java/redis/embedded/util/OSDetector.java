@@ -78,15 +78,29 @@ public class OSDetector {
         BufferedReader input = null;
         try {
             String line;
-            Process proc = Runtime.getRuntime().exec("sysctl hw");
+            Process proc = Runtime.getRuntime().exec("sysctl -a");
             input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            boolean isArm = false;
+            boolean is64bit = false;
             while ((line = input.readLine()) != null) {
                 if (line.length() > 0) {
                     if ((line.contains("cpu64bit_capable")) && (line.trim().endsWith("1"))) {
-                        return Architecture.x86_64;
+                        is64bit = true;
+                    }
+
+                    if ((line.contains("machdep.cpu.brand_string")) && (line.trim().contains("Apple"))) {
+                        isArm = true;
                     }
                 }
             }
+
+            if (isArm) {
+                return Architecture.ARM;
+            } else if (is64bit) {
+                return Architecture.x86_64;
+            }
+
+            return Architecture.x86;
         } catch (Exception e) {
             throw new OsDetectionException(e);
         } finally {
@@ -98,7 +112,5 @@ public class OSDetector {
                 // ignore
             }
         }
-
-        return Architecture.x86;
     }
 }

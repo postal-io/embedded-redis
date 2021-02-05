@@ -1,0 +1,27 @@
+steps:
+  # Grab cached M2 repo
+  - name: gcr.io/cloud-builders/gsutil
+    id: Get M2 Cache
+    args: ['cp', 'gs://postal-mvn-repo/m2.tar.gz', 'm2.tar.gz']
+  - name: gcr.io/postal-dev-environment-1/tar
+    id: Expand M2 Cache
+    args: ['xpzf', 'm2.tar.gz']
+  # get maven settings
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: Get setting.xml
+    args: ['cp', 'gs://postal-mvn-repo/settings.xml', 'postal.io-settings.xml']
+  # build app and push image
+  - name: 'maven:3-jdk-11'
+    entrypoint: 'mvn'
+    id: Test and Build
+    args: ['-Dmaven.repo.local=/workspace/.m2/repository', '--settings', 'postal.io-settings.xml', '-Dgit.tag=$TAG_NAME', 'deploy']
+  # Update M2 repo cache
+  - name: gcr.io/postal-dev-environment-1/tar
+    id: Compress M2 Cache
+    args: ['cpzf', 'm2.tar.gz', '.m2']
+  - name: gcr.io/cloud-builders/gsutil
+    id: Save M2 Cache
+    args: ['cp', 'm2.tar.gz', 'gs://postal-mvn-repo/m2.tar.gz']
+options:
+  machineType: N1_HIGHCPU_8
+tags: ['library', 'packagecloud']

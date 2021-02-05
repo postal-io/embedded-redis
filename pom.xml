@@ -1,7 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <parent>
+        <groupId>com.postalio</groupId>
+        <artifactId>build-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>it.ozimov</groupId>
     <artifactId>embedded-redis</artifactId>
     <packaging>jar</packaging>
     <version>0.7.4-SNAPSHOT</version>
@@ -17,13 +22,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <scm>
-        <url>https://github.com/ozimov/embedded-redis</url>
-        <connection>scm:git:https://github.com/ozimov/embedded-redis.git</connection>
-        <developerConnection>scm:git:https://github.com/ozimov/embedded-redis.git</developerConnection>
-        <tag>embedded-redis-0.7.2</tag>
-    </scm>
 
     <developers>
         <developer>
@@ -96,16 +94,6 @@
         <maven>3.0.4</maven>
     </prerequisites>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
     <build>
         <resources>
             <resource>
@@ -116,16 +104,10 @@
             </resource>
         </resources>
         <plugins>
-            <!-- MAVEN SUREFIRE +  FAILSAFE -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>0.8.4</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -167,14 +149,6 @@
                 <configuration>
                     <pushChanges>false</pushChanges>
                     <tag>${project.version}</tag>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -228,31 +202,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
